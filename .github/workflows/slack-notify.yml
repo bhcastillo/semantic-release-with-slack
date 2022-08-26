@@ -1,0 +1,54 @@
+
+name: slack-notification
+
+on:
+  push:
+    branches: [ main ]
+    
+jobs:
+  slackNotification:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 
+
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+
+      - name: Get Latest Release
+        id: get_latest_release
+        uses: oprypin/find-latest-tag@v1
+        with:
+          repository: ${{ github.repository }}
+          token: ${{ secrets.GH_TOKEN }}
+          releases-only: true
+
+      - name: Print version
+        run: echo ${{ steps.get_latest_release.outputs.tag }}
+
+      - name: Get current time
+        uses: josStorer/get-current-time@v2.0.1
+        id: current-time
+        with:
+          format: DDMMM HH:mm
+          utcOffset: "-05:00"
+
+      - name: generate name for message
+        run: echo "::set-output name=MESSAGE::[${{ steps.extract_branch.outputs.branch }}] [Release] ${{ github.event.repository.name }} | v${{ steps.get_latest_release.outputs.tag }} / ${{ steps.current-time.outputs.formattedTime }} GMT-5"
+        id: message-generator
+
+      - name: Slack notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_CHANNEL: admin-notification
+          SLACK_USERNAME: Release Bot
+          SLACK_COLOR: good
+          SLACK_TITLE: "${{ steps.message-generator.outputs.MESSAGE }}"
+          MSG_MINIMAL: true
+          SLACK_FOOTER: "Admin / E-commerce"
+          SLACK_LINK_NAMES: true

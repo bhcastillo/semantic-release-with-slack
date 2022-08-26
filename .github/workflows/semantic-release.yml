@@ -1,0 +1,34 @@
+
+name: semantic-release
+
+on:
+  push:
+    branches: [ developer ]
+
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16.17.0
+
+      - name: Install Dependencies
+        run: yarn install
+
+      - name: Semantic Release
+        uses: cycjimmy/semantic-release-action@v2
+        id: semantic
+        with:
+          branch: developer
+          extra_plugins: |
+            @semantic-release/git
+            @semantic-release/changelog
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
+

@@ -1,0 +1,35 @@
+{
+  "name": "semantic-release-with-slack",
+  "version": "0.0.0-development",
+  "description": "Semantic release with slack notification example",
+  "author": "Brayan Castillo",
+  "email": "brayan.castillo@gmail.com",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "yarn clean && tsc",
+    "clean": "rimraf dist/",
+    "semantic-release": "semantic-release",
+    "prepare": "husky install",
+    "cm": "cz"
+  },
+  "keywords": [],
+  "license": "MIT",
+  "devDependencies": {
+    "@commitlint/cli": "^17.0.3",
+    "@commitlint/config-conventional": "^17.0.3",
+    "cz-conventional-changelog": "^3.3.0",
+    "husky": "^8.0.1",
+    "rimraf": "^3.0.2",
+    "semantic-release": "^19.0.5",
+    "semantic-release-cli": "^5.4.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bhcastillo/semantic-release-with-slack.git"
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  }
+}
